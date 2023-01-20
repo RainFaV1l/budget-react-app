@@ -18,13 +18,15 @@ const UserPage = () => {
     }, []);
 
     return (
-        <div>
-            <h2>{user.name}</h2>
-            <h2>{user.email}</h2>
-            <h2>{user.website}</h2>
-            <h2>{user.username}</h2>
-            <h2>{user?.address?.city}</h2>
-        </div>
+        <section>
+            <div>
+                <h2>{user.name}</h2>
+                <h2>{user.email}</h2>
+                <h2>{user.website}</h2>
+                <h2>{user.username}</h2>
+                <h2>{user?.address?.city}</h2>
+            </div>
+        </section>
     )
 }
 
