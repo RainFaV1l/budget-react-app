@@ -1,4 +1,6 @@
-*, *::after, *::before {
+*,
+*::after,
+*::before {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -20,17 +22,23 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+
   text-align: center;
+
   cursor: pointer;
+
   border: none;
-  outline: 0;
-  padding: 17px 54px;
+  outline: none;
+
+  padding: 16px 64px;
+
   font-size: 16px;
   font-weight: 400;
-  background: #f88c28;
+
   color: #fff;
+
+  background: #f88c28;
   border-radius: 10px;
-  font: inherit;
 }
 
 .button.sm {
@@ -53,28 +61,34 @@ body {
 
 .balance-form .wrapper input,
 .balance-form .wrapper select {
-  border: none;
-  background-color: #fff;
-  font-size: 16px;
-  outline: 0;
   padding: 8px;
   border-radius: 10px;
-  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
+  border: none;
+
+  background-color: #fff;
+
+  font-size: 16px;
+
+  box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.3);
 }
 
 .filter {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-  background-color: #F9F9FA;
+
+  background-color: #f9f9fa;
   padding: 18px 48px;
+
   border-radius: 10px;
 }
 
-operations {
+.operations {
   display: flex;
   flex-direction: column;
   gap: 16px;
+
+  margin: 32px 0;
 }
 
 .operation {
@@ -82,19 +96,17 @@ operations {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  
+
   padding: 8px 16px;
 
-  background-color: #F9F9FA;
-
-  margin: 32px 0;
+  background-color: #f9f9fa;
 }
 
 .operation:first-child {
   border-radius: 8px 8px 0 0;
 }
 
-.operation:last-child  {
+.operation:last-child {
   border-radius: 0 0 8px 8px;
 }
 
@@ -105,7 +117,7 @@ operations {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  
+
   border-radius: 50%;
 
   width: var(--size);
@@ -117,5 +129,8 @@ operations {
 
 .operation .circle.income {
   background-color: #009b77;
+}
 
+.operation .circle.expense {
+  background-color: tomato;
 }

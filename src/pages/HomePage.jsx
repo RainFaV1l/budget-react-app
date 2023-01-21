@@ -3,7 +3,7 @@
 
 const OPERATION_TYPES = {
     INCOME: "income",
-    EXPENSE: "expernse",
+    EXPENSE: "expense",
 };
 
 const OPERATIONS = [
@@ -103,7 +103,10 @@ const HomePage = () => {
 
                                         <div className={`circle ${operation.type === OPERATION_TYPES.INCOME ? "income" : "expense"}`}>
                                             {
-                                                operation.type === OPERATION_TYPES.INCOME ? <i className="fa-solid fa-money-bill"></i> : <i className="fa-solid fa-shop"></i>
+                                                operation.type === OPERATION_TYPES.INCOME ?
+                                                <i className="fa-solid fa-money-bill"></i>
+                                                :
+                                                <i className="fa-solid fa-shop"></i>
                                             }
                                         </div>
 
