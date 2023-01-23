@@ -1,12 +1,22 @@
-// INCOME - доходы
-// EXPENSE - расходы
+import { formatMoney } from "../utils";
+import { OPERATION_TYPES } from "../types/operations";
+import { useState } from "react";
 
-const OPERATION_TYPES = {
-    INCOME: "income",
-    EXPENSE: "expense",
+const INCOME_CATEGORIES = {
+    salary: "Зарплата",
+    transfer: "Перевод",
+    cashback: "Кэшбек",
 };
 
-const OPERATIONS = [
+const EXPENSE_CATEGORIES = {
+    products: "Продукты",
+    car: "Автомобиль",
+    services: "Коммунальные услуги",
+};
+
+const CATEGORIES = {...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES};
+
+const initialItems = [
     {
         id: 1,
         category: "products",
@@ -30,17 +40,56 @@ const OPERATIONS = [
     },
 ];
 
-// Форматирование чисел
-const formatNumber = (value) => {
-    return Intl.NumberFormat('ru-Ru').format(value);
-}
+const getItemType = (category) => {
 
-// Функция форматирования денег
-const formatMoney = (value) => {
-    return `${formatNumber(value)} руб.`;
+    if(Object.keys(INCOME_CATEGORIES).includes(category)) {
+        return OPERATION_TYPES.INCOME;
+    }
+
+    return OPERATION_TYPES.EXPENSE;
+
 }
 
 const HomePage = () => {
+
+    const [items, setItems] = useState(initialItems);
+    const [balance, setBalance] = useState(0);
+    const [category, setCategory] = useState('none'); 
+
+    const onChangeCategoryHandle = (e) => setCategory(e.target.value);
+
+    const onChangeBalanceHandle = (event) => {
+
+        setBalance((prevState) => {
+            const value = parseInt(event.target.value) || 0;
+
+            if(!isNaN(value)) {
+                prevState = value;
+            }
+
+            return prevState;
+        })
+    }
+
+    const onAddItemHandle = () => {
+        setItems((prevState) => {
+            prevState = [...prevState];
+
+            prevState.push(
+                {
+                    id: Date.now(),
+                    category: category,
+                    value: balance,
+                    type: getItemType(category),
+                    date: new Date()
+                }
+            );
+
+            return prevState;
+        });
+
+        setBalance(0);
+    }
 
     return (
 
@@ -56,7 +105,7 @@ const HomePage = () => {
 
                 <div className="balance-form">
 
-                    <form>
+                    <form onSubmit={e => e.preventDefault()}>
 
                         <h3>Добавить операцию</h3>
 
@@ -66,15 +115,27 @@ const HomePage = () => {
                             type="text" 
                             name="balance" 
                             placeholder="30 300"
+                            value={balance}
+                            onChange={(event) => onChangeBalanceHandle(event)}
                             />
 
-                            <select name="category">
+                            <select onChange={(e) => onChangeCategoryHandle(e)} name="category">
 
-                                <option value="products">Продукты</option>
+                                <option value="none">Не выбрано</option>
+
+                                {
+                                    Object.keys(CATEGORIES).map((category) => {
+                                        return (
+                                            <option key={category} value={category}>
+                                                {CATEGORIES[category]}
+                                            </option>
+                                        );
+                                    })
+                                }
 
                             </select>
 
-                            <button className="button">Добавить операцию</button>
+                            <button className="button" onClick={onAddItemHandle}>Добавить операцию</button>
 
                         </div>
 
@@ -97,21 +158,22 @@ const HomePage = () => {
                     <div className="operations">
 
                         {
-                            OPERATIONS.map((operation) => {
+                            items.map((items) => {
                                 return (
-                                    <div key={operation.id} className="operation">
+                                    <div key={items.id} className="operation">
 
-                                        <div className={`circle ${operation.type === OPERATION_TYPES.INCOME ? "income" : "expense"}`}>
+                                        <div className={`circle ${items.type === OPERATION_TYPES.INCOME ? "income" : "expense"}`}>
                                             {
-                                                operation.type === OPERATION_TYPES.INCOME ?
+                                                items.type === OPERATION_TYPES.INCOME ?
                                                 <i className="fa-solid fa-money-bill"></i>
                                                 :
                                                 <i className="fa-solid fa-shop"></i>
                                             }
                                         </div>
 
-                                        <p className="category">Категория: {operation.category}</p>
-                                        <p className="total">{formatMoney(operation.value)} руб.</p>
+                                        <p className="category">Категория: { CATEGORIES[items.category ]}</p>
+                                        <p className="total">{formatMoney(items.value)} руб.</p>
+
                                         <button className="button button--remove">Удалить</button>
 
                                     </div>
