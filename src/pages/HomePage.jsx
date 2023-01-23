@@ -1,20 +1,9 @@
-import { formatMoney } from "../utils";
 import { OPERATION_TYPES } from "../types/operations";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { formatMoney, calculateBalance, getItemType } from "../utils/index";
+import { filterExpense, filterIncome } from "../utils/filter";
+import { CATEGORIES } from "../data/categories";
 
-const INCOME_CATEGORIES = {
-    salary: "Зарплата",
-    transfer: "Перевод",
-    cashback: "Кэшбек",
-};
-
-const EXPENSE_CATEGORIES = {
-    products: "Продукты",
-    car: "Автомобиль",
-    services: "Коммунальные услуги",
-};
-
-const CATEGORIES = {...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES};
 
 const initialItems = [
     {
@@ -40,27 +29,24 @@ const initialItems = [
     },
 ];
 
-const getItemType = (category) => {
-
-    if(Object.keys(INCOME_CATEGORIES).includes(category)) {
-        return OPERATION_TYPES.INCOME;
-    }
-
-    return OPERATION_TYPES.EXPENSE;
-
-}
+const initialBalanceState = 0;
 
 const HomePage = () => {
 
-    const [items, setItems] = useState(initialItems);
     const [balance, setBalance] = useState(0);
+    const [items, setItems] = useState(initialItems);
+    const [formBalance, setformBalance] = useState(0);
     const [category, setCategory] = useState('none'); 
+
+    useEffect(() => {
+        setBalance(calculateBalance(items));
+    }, [items]);
 
     const onChangeCategoryHandle = (e) => setCategory(e.target.value);
 
     const onChangeBalanceHandle = (event) => {
 
-        setBalance((prevState) => {
+        setformBalance((prevState) => {
             const value = parseInt(event.target.value) || 0;
 
             if(!isNaN(value)) {
@@ -79,7 +65,7 @@ const HomePage = () => {
                 {
                     id: Date.now(),
                     category: category,
-                    value: balance,
+                    value: formBalance,
                     type: getItemType(category),
                     date: new Date()
                 }
@@ -88,7 +74,21 @@ const HomePage = () => {
             return prevState;
         });
 
-        setBalance(0);
+        setformBalance(0);
+    }
+
+    const onClickAllFilterHandle = () => {
+        setItems(initialItems);
+    }
+
+    // Для отображения всех доходов
+    const onClickIncomeFilterHandle = () => {
+        setItems(filterIncome(initialItems));
+    }
+
+        // Для отображения всех расходов
+    const onClickExpenseFilterHandle = () => {
+        setItems(filterExpense(initialItems));
     }
 
     return (
@@ -99,7 +99,7 @@ const HomePage = () => {
 
                 <div className="balance">
 
-                    <h2>{formatMoney(50275)}</h2>
+                    <h2>{formatMoney(balance)}</h2>
 
                 </div>
 
@@ -115,7 +115,7 @@ const HomePage = () => {
                             type="text" 
                             name="balance" 
                             placeholder="30 300"
-                            value={balance}
+                            value={formBalance}
                             onChange={(event) => onChangeBalanceHandle(event)}
                             />
 
@@ -149,9 +149,9 @@ const HomePage = () => {
 
                     <div className="filter">
 
-                        <button className="button sm">Все операции</button>
-                        <button className="button sm green">Все доходы</button>
-                        <button className="button sm red">Все расходы</button>
+                        <button onClick={onClickAllFilterHandle} className="button sm">Все операции</button>
+                        <button onClick={onClickIncomeFilterHandle} className="button sm green">Все доходы</button>
+                        <button onClick={onClickExpenseFilterHandle} className="button sm red">Все расходы</button>
 
                     </div>
 
